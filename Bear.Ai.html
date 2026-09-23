@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bear.AI MAX</title>
+
+<style>
+*{box-sizing:border-box}
+:root{
+ --bg:#0b1018;
+ --panel:#121a26;
+ --panel2:#182334;
+ --border:#29384d;
+ --text:#fff;
+ --muted:#91a0b5;
+ --accent:#2563eb;
+ --green:#16a34a;
+ --red:#dc2626;
+ --purple:#7c3aed;
+}
+body.light{
+ --bg:#eef2f7;
+ --panel:#fff;
+ --panel2:#e8edf5;
+ --border:#cbd5e1;
+ --text:#111827;
+ --muted:#64748b;
+}
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--text);
+ font-family:Arial,sans-serif;
+ height:100vh;
+ overflow:hidden;
+ transition:.25s;
+}
+button{
+ font-family:inherit;
+ cursor:pointer;
+}
+.sidebar{
+ position:fixed;
+ left:0;
+ top:0;
+ bottom:0;
+ width:78px;
+ background:var(--panel);
+ border-right:1px solid var(--border);
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ padding:10px 7px;
+ gap:7px;
+ z-index:100;
+ overflow-y:auto;
+}
+.logo{
+ font-size:32px;
+ margin:4px 0 10px;
+ cursor:pointer;
+}
+.side-button{
+ width:62px;
+ min-height:57px;
+ border:0;
+ border-radius:14px;
+ background:var(--panel2);
+ color:var(--text);
+ font-size:10px;
+}
+.side-button:hover,.side-button.active{
+ background:var(--accent);
+ color:#fff;
+}
+.side-icon{
+ display:block;
+ font-size:22px;
+ margin-bottom:3px;
+}
+.main{
+ margin-left:78px;
+ height:100vh;
+ display:flex;
+ flex-direction:column;
+}
+.header{
+ height:64px;
+ flex-shrink:0;
+ border-bottom:1px solid var(--border);
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 16px;
+ background:var(--panel);
+}
+.brand{
+ font-size:21px;
+ font-weight:bold;
+}
+.header-actions{
+ display:flex;
+ gap:7px;
+}
+.header button{
+ border:0;
+ background:var(--panel2);
+ color:var(--text);
+ padding:9px 12px;
+ border-radius:10px;
+}
+.chat{
+ flex:1;
+ overflow-y:auto;
+ padding:18px;
+ padding-bottom:95px;
+}
+.message{
+ max-width:850px;
+ margin:11px auto;
+ padding:13px 15px;
+ border-radius:16px;
+ line-height:1.5;
+ white-space:pre-wrap;
+ word-wrap:break-word;
+}
+.user{
+ background:var(--accent);
+ margin-right:0;
+}
+.bot{
+ background:var(--panel);
+ border:1px solid var(--border);
+ margin-left:0;
+}
+.input-area{
+ position:fixed;
+ left:78px;
+ right:0;
+ bottom:0;
+ padding:10px;
+ background:var(--bg);
+ border-top:1px solid var(--border);
+ display:flex;
+ gap:7px;
+ z-index:50;
+}
+.input-area input{
+ flex:1;
+ min-width:0;
+ background:var(--panel);
+ color:var(--text);
+ border:1px solid var(--border);
+ border-radius:13px;
+ padding:13px;
+ outline:0;
+}
+.input-button{
+ width:46px;
+ border:0;
+ border-radius:12px;
+ background:var(--panel2);
+ color:var(--text);
+ font-size:19px;
+}
+.send{
+ background:var(--accent);
+ color:white;
+}
+.modes{
+ position:fixed;
+ right:12px;
+ top:58px;
+ width:245px;
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:14px;
+ padding:8px;
+ display:none;
+ z-index:200;
+ box-shadow:0 10px 35px #0008;
+}
+.modes.show{display:block}
+.mode{
+ padding:11px;
+ border-radius:9px;
+}
+.mode:hover{background:var(--accent);color:#fff}
+
+.panel{
+ position:fixed;
+ left:78px;
+ right:0;
+ top:64px;
+ bottom:0;
+ background:var(--bg);
+ z-index:40;
+ display:none;
+ flex-direction:column;
+ overflow:auto;
+}
+.panel.show{display:flex}
+.panel-head{
+ padding:13px 17px;
+ border-bottom:1px solid var(--border);
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ background:var(--panel);
+}
+.panel-title{
+ font-size:20px;
+ font-weight:bold;
+}
+.close{
+ border:0;
+ background:var(--red);
+ color:#fff;
+ padding:8px 12px;
+ border-radius:9px;
+}
+.content{
+ width:min(900px,94%);
+ margin:20px auto;
+}
+.card{
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:16px;
+ padding:16px;
+ margin-bottom:14px;
+}
+.big-title{
+ font-size:27px;
+ font-weight:bold;
+ margin-bottom:7px;
+}
+.muted{color:var(--muted)}
+textarea{
+ width:100%;
+ background:var(--panel);
+ color:var(--text);
+ border:1px solid var(--border);
+ border-radius:13px;
+ padding:13px;
+ outline:0;
+ resize:vertical;
+}
+.primary{
+ border:0;
+ background:var(--accent);
+ color:#fff;
+ padding:11px 15px;
+ border-radius:10px;
+}
+.green{
+ border:0;
+ background:var(--green);
+ color:#fff;
+ padding:11px 15px;
+ border-radius:10px;
+}
+.purple{
+ border:0;
+ background:var(--purple);
+ color:#fff;
+ padding:11px 15px;
+ border-radius:10px;
+}
+.gray{
+ border:0;
+ background:#475569;
+ color:#fff;
+ padding:11px 15px;
+ border-radius:10px;
+}
+.danger{
+ border:0;
+ background:var(--red);
+ color:#fff;
+ padding:11px 15px;
+ border-radius:10px;
+}
+.row{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+}
+.result{
+ margin-top:15px;
+ padding:15px;
+ background:var(--panel2);
+ border:1px solid var(--border);
+ border-radius:13px;
+ white-space:pre-wrap;
+ line-height:1.7;
+ display:none;
+}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+.stat{
+ background:var(--panel2);
+ border:1px solid var(--border);
+ padding:15px;
+ border-radius:13px;
+ text-align:center;
+}
+.stat b{
+ display:block;
+ font-size:25px;
+ margin-top:5px;
+}
+.code-box{
+ background:#070b11;
+ border:1px solid #334155;
+ border-radius:12px;
+ overflow:hidden;
+ margin-top:8px;
+}
+.code-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:8px;
+ background:#111827;
+}
+.code-copy{
+ border:0;
+ background:#2563eb;
+ color:white;
+ padding:7px 10px;
+ border-radius:7px;
+}
+pre{
+ margin:0;
+ padding:14px;
+ color:#a7f3d0;
+ overflow:auto;
+ white-space:pre;
+}
+.game-code{
+ width:100%;
+ min-height:190px;
+ margin:12px 0;
+}
+.game-frame{
+ width:100%;
+ height:60vh;
+ background:#fff;
+ border:1px solid var(--border);
+ border-radius:13px;
+ display:none;
+}
+.game-frame.show{display:block}
+.calc{
+ width:min(350px,94%);
+ margin:30px auto;
+ background:var(--panel);
+ border:1px solid var(--border);
+ padding:15px;
+ border-radius:20px;
+}
+.calc-display{
+ width:100%;
+ height:65px;
+ border:0;
+ border-radius:12px;
+ background:#070b11;
+ color:#fff;
+ font-size:27px;
+ text-align:right;
+ padding:10px;
+ margin-bottom:10px;
+}
+.calc-grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:8px;
+}
+.calc-grid button{
+ height:57px;
+ border:0;
+ border-radius:11px;
+ background:var(--panel2);
+ color:var(--text);
+ font-size:19px;
+}
+.calc-grid button:hover{background:var(--accent);color:#fff}
+.calc-grid .eq{background:var(--green);color:#fff}
+.calc-grid .clear{background:var(--red);color:#fff}
+.photo{
+ max-width:100%;
+ max-height:350px;
+ border-radius:12px;
+ margin-top:12px;
+ display:none;
+}
+.hidden{display:none}
+.history-item{
+ padding:12px;
+ background:var(--panel2);
+ border-radius:11px;
+ margin:8px 0;
+ white-space:pre-wrap;
+}
+.favorite{
+ padding:12px;
+ background:var(--panel2);
+ border-radius:11px;
+ margin:8px 0;
+}
+.theme-grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+}
+.theme{
+ padding:20px;
+ border-radius:13px;
+ background:var(--panel2);
+ border:2px solid transparent;
+ cursor:pointer;
+}
+.theme:hover{border-color:var(--accent)}
+.level{
+ height:12px;
+ background:var(--panel2);
+ border-radius:20px;
+ overflow:hidden;
+ margin-top:8px;
+}
+.level div{
+ height:100%;
+ background:var(--accent);
+ width:0;
+}
+.toast{
+ position:fixed;
+ right:15px;
+ bottom:80px;
+ background:#111827;
+ color:white;
+ padding:12px 16px;
+ border-radius:11px;
+ display:none;
+ z-index:500;
+}
+.secret{
+ animation:secret .7s infinite alternate;
+}
+@keyframes secret{
+ from{filter:hue-rotate(0deg)}
+ to{filter:hue-rotate(180deg)}
+}
+@media(max-width:600px){
+ .sidebar{width:68px}
+ .main{margin-left:68px}
+ .input-area{left:68px}
+ .panel{left:68px}
+ .side-button{width:53px}
+ .stats{grid-template-columns:1fr}
+ .header{padding:0 8px}
+ .brand{font-size:17px}
+ .header button{padding:8px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+<div class="logo" onclick="secretMode()">🐻</div>
+
+<button class="side-button active" id="chatButton" onclick="showChat()">
+<span class="side-icon">💬</span>Чат
+</button>
+
+<button class="side-button" id="taskButton" onclick="openTask()">
+<span class="side-icon">📝</span>Задача
+</button>
+
+<button class="side-button" id="homeButton" onclick="openHomework()">
+<span class="side-icon">📚</span>Домашка
+</button>
+
+<button class="side-button" id="gameButton" onclick="openGame()">
+<span class="side-icon">🎮</span>Играть
+</button>
+
+<button class="side-button" id="calcButton" onclick="openCalculator()">
+<span class="side-icon">🧮</span>Кальк.
+</button>
+
+<button class="side-button" id="historyButton" onclick="openHistory()">
+<span class="side-icon">🕘</span>История
+</button>
+
+<button class="side-button" id="favoriteButton" onclick="openFavorites()">
+<span class="side-icon">⭐</span>Избранное
+</button>
+
+<button class="side-button" id="statsButton" onclick="openStats()">
+<span class="side-icon">📊</span>Стата
+</button>
+
+<button class="side-button" id="themeButton" onclick="openThemes()">
+<span class="side-icon">🎨</span>Тема
+</button>
+
+</div>
+
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+
+<div class="brand">🐻 Bear.AI MAX</div>
+
+<div class="header-actions">
+<button onclick="toggleModes()">⚙️ Режимы</button>
+<button onclick="openIdeas()">💡</button>
+<button onclick="speakLast()">🔊</button>
+</div>
+
+</div>
+
+
+<div class="modes" id="modes">
+
+<div class="mode" onclick="setMode('chat')">💬 Обычный чат</div>
+<div class="mode" onclick="setMode('math')">🧮 Математика</div>
+<div class="mode" onclick="setMode('homework')">📚 Домашка</div>
+<div class="mode" onclick="setMode('code')">💻 Код</div>
+<div class="mode" onclick="setMode('games')">🎮 Игры</div>
+<div class="mode" onclick="setMode('fun')">😂 Развлечения</div>
+<div class="mode" onclick="setMode('simple')">🧠 Объясни проще</div>
+
+</div>
+
+
+<div class="chat" id="chat">
+
+<div class="message bot">
+🐻 Привет! Я Bear.AI MAX!
+
+Теперь у меня куча функций 😎
+
+📝 Задачи
+📷 Фото
+📚 Домашка
+🎮 Игры
+🧮 Калькулятор
+💻 Код
+🎤 Голос
+🔊 Озвучка
+💾 История
+⭐ Избранное
+🏆 XP
+📊 Статистика
+🎨 Темы
+💡 Идеи
+😂 Мемы
+
+Выбирай кнопку слева!
+</div>
+
+</div>
+
+
+<div class="input-area">
+
+<button class="input-button" onclick="startVoice()">🎤</button>
+
+<input id="userInput"
+placeholder="Напиши Bear.AI..."
+onkeydown="if(event.key==='Enter')sendMessage()">
+
+<button class="input-button send" onclick="sendMessage()">➤</button>
+
+</div>
+
+</div>
+
+
+<!-- ЗАДАЧА -->
+<div class="panel" id="taskPanel">
+
+<div class="panel-head">
+<div class="panel-title">📝 Решатель задач</div>
+<button class="close" onclick="closePanel('taskPanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div class="big-title">🧠 Реши мою задачу</div>
+
+<p class="muted">
+Напиши условие — Bear.AI покажет действия и ответ.
+</p>
+
+<textarea id="taskInput" rows="6"
+placeholder="Например:
+У Маши было 25 яблок. Она отдала 7 яблок. Сколько осталось?"></textarea>
+
+<div class="row" style="margin-top:10px">
+
+<button class="primary" onclick="solveTask()">
+🧠 Решить
+</button>
+
+<button class="purple" onclick="choosePhoto()">
+📷 Сфоткать задание
+</button>
+
+<button class="gray" onclick="simplifyTask()">
+🧠 Объяснить проще
+</button>
+
+</div>
+
+<input id="photoInput" type="file"
+accept="image/*"
+capture="environment"
+class="hidden"
+onchange="photoSelected(event)">
+
+<img id="photoPreview" class="photo">
+
+<div id="taskResult" class="result"></div>
+
+</div>
+</div>
+
+
+<!-- ДОМАШКА -->
+<div class="panel" id="homeworkPanel">
+
+<div class="panel-head">
+<div class="panel-title">📚 Домашка</div>
+<button class="close" onclick="closePanel('homeworkPanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div class="card">
+
+<div class="big-title">📚 Помощник по домашке</div>
+
+<textarea id="homeworkInput" rows="7"
+placeholder="Напиши задание..."></textarea>
+
+<div class="row" style="margin-top:10px">
+
+<button class="primary" onclick="solveHomework()">🧠 Решить</button>
+<button class="gray" onclick="explainHomework()">💡 Объяснить</button>
+<button class="purple" onclick="checkHomework()">✅ Проверить</button>
+
+</div>
+
+<div id="homeworkResult" class="result"></div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ИГРА -->
+<div class="panel" id="gamePanel">
+
+<div class="panel-head">
+<div class="panel-title">🎮 Игровой центр</div>
+<button class="close" onclick="closePanel('gamePanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div class="card">
+
+<div class="big-title">🎮 Запусти игру</div>
+
+<textarea id="gameCode" class="game-code"
+placeholder="Вставь сюда HTML-код игры Bear.AI..."></textarea>
+
+<div class="row">
+
+<button class="green" onclick="runGame()">▶️ Играть</button>
+<button class="gray" onclick="backGameCode()">📝 Код</button>
+<button class="purple" onclick="generateRandomGame()">🎲 Создать игру</button>
+
+</div>
+
+</div>
+
+<iframe id="gameFrame" class="game-frame"
+sandbox="allow-scripts allow-forms allow-modals"></iframe>
+
+</div>
+</div>
+
+
+<!-- КАЛЬКУЛЯТОР -->
+<div class="panel" id="calcPanel">
+
+<div class="panel-head">
+<div class="panel-title">🧮 Калькулятор</div>
+<button class="close" onclick="closePanel('calcPanel')">✕</button>
+</div>
+
+<div class="calc">
+
+<input id="calcDisplay" class="calc-display" value="0" readonly>
+
+<div class="calc-grid">
+
+<button class="clear" onclick="clearCalc()">C</button>
+<button onclick="backCalc()">⌫</button>
+<button onclick="calcInput('(')">(</button>
+<button onclick="calcInput(')')">)</button>
+
+<button onclick="calcInput('7')">7</button>
+<button onclick="calcInput('8')">8</button>
+<button onclick="calcInput('9')">9</button>
+<button onclick="calcInput('/')">÷</button>
+
+<button onclick="calcInput('4')">4</button>
+<button onclick="calcInput('5')">5</button>
+<button onclick="calcInput('6')">6</button>
+<button onclick="calcInput('*')">×</button>
+
+<button onclick="calcInput('1')">1</button>
+<button onclick="calcInput('2')">2</button>
+<button onclick="calcInput('3')">3</button>
+<button onclick="calcInput('-')">−</button>
+
+<button onclick="calcInput('0')">0</button>
+<button onclick="calcInput('.')">.</button>
+<button class="eq" onclick="calculateCalc()">=</button>
+<button onclick="calcInput('+')">+</button>
+
+</div>
+</div>
+</div>
+
+
+<!-- ИСТОРИЯ -->
+<div class="panel" id="historyPanel">
+
+<div class="panel-head">
+<div class="panel-title">🕘 История</div>
+<button class="close" onclick="closePanel('historyPanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div class="row">
+<button class="danger" onclick="clearHistory()">🗑 Очистить историю</button>
+</div>
+
+<div id="historyList" style="margin-top:15px"></div>
+
+</div>
+</div>
+
+
+<!-- ИЗБРАННОЕ -->
+<div class="panel" id="favoritePanel">
+
+<div class="panel-head">
+<div class="panel-title">⭐ Избранное</div>
+<button class="close" onclick="closePanel('favoritePanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div id="favoriteList"></div>
+
+</div>
+</div>
+
+
+<!-- СТАТИСТИКА -->
+<div class="panel" id="statsPanel">
+
+<div class="panel-head">
+<div class="panel-title">📊 Статистика</div>
+<button class="close" onclick="closePanel('statsPanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div class="card">
+
+<div class="big-title">🏆 Твой профиль Bear.AI</div>
+
+<div class="stats">
+
+<div class="stat">
+💬 Сообщений
+<b id="statMessages">0</b>
+</div>
+
+<div class="stat">
+📝 Задач
+<b id="statTasks">0</b>
+</div>
+
+<div class="stat">
+🎮 Игр
+<b id="statGames">0</b>
+</div>
+
+</div>
+
+<br>
+
+<div>⭐ XP: <b id="xpText">0</b></div>
+
+<div class="level">
+<div id="xpBar"></div>
+</div>
+
+<p id="levelText">Уровень 1</p>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ТЕМЫ -->
+<div class="panel" id="themePanel">
+
+<div class="panel-head">
+<div class="panel-title">🎨 Темы</div>
+<button class="close" onclick="closePanel('themePanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div class="theme-grid">
+
+<div class="theme" onclick="setTheme('dark')">
+🌑<br><b>Тёмная</b>
+</div>
+
+<div class="theme" onclick="setTheme('light')">
+☀️<br><b>Светлая</b>
+</div>
+
+<div class="theme" onclick="setAccent('#2563eb')">
+🔵 Синяя
+</div>
+
+<div class="theme" onclick="setAccent('#7c3aed')">
+🟣 Фиолетовая
+</div>
+
+<div class="theme" onclick="setAccent('#16a34a')">
+🟢 Зелёная
+</div>
+
+<div class="theme" onclick="setAccent('#db2777')">
+🌸 Розовая
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ИДЕИ -->
+<div class="panel" id="ideasPanel">
+
+<div class="panel-head">
+<div class="panel-title">💡 Генератор идей</div>
+<button class="close" onclick="closePanel('ideasPanel')">✕</button>
+</div>
+
+<div class="content">
+
+<div class="card">
+
+<div class="big-title">💡 Что придумать?</div>
+
+<div class="row">
+
+<button class="primary" onclick="idea('игра')">🎮 Игра</button>
+<button class="purple" onclick="idea('TikTok')">📱 TikTok</button>
+<button class="green" onclick="idea('проект')">💻 Проект</button>
+<button class="gray" onclick="idea('мем')">😂 Мем</button>
+
+</div>
+
+<div id="ideasResult" class="result"></div>
+
+</div>
+
+</div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* =========================
+   СОСТОЯНИЕ
+========================= */
+
+let mode="chat";
+let lastAnswer="";
+let lastUser="";
+
+let stats=JSON.parse(localStorage.getItem("bearStats")||'{"messages":0,"tasks":0,"games":0,"xp":0}');
+
+let history=JSON.parse(localStorage.getItem("bearHistory")||"[]");
+
+let favorites=JSON.parse(localStorage.getItem("bearFavorites")||"[]");
+
+
+/* =========================
+   ОСНОВНЫЕ ФУНКЦИИ
+========================= */
+
+function saveData(){
+
+ localStorage.setItem("bearStats",JSON.stringify(stats));
+ localStorage.setItem("bearHistory",JSON.stringify(history));
+ localStorage.setItem("bearFavorites",JSON.stringify(favorites));
+
+ updateStats();
+}
+
+
+function toast(text){
+
+ const t=document.getElementById("toast");
+
+ t.textContent=text;
+ t.style.display="block";
+
+ setTimeout(()=>{
+  t.style.display="none";
+ },1800);
+
+}
+
+
+function xp(amount){
+
+ stats.xp+=amount;
+
+ saveData();
+
+}
+
+
+function updateStats(){
+
+ document.getElementById("statMessages").textContent=stats.messages;
+ document.getElementById("statTasks").textContent=stats.tasks;
+ document.getElementById("statGames").textContent=stats.games;
+
+ document.getElementById("xpText").textContent=stats.xp;
+
+ let level=Math.floor(stats.xp/100)+1;
+ let progress=stats.xp%100;
+
+ document.getElementById("levelText").textContent="Уровень "+level;
+ document.getElementById("xpBar").style.width=progress+"%";
+
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+function active(id){
+
+ document.querySelectorAll(".side-button")
+ .forEach(x=>x.classList.remove("active"));
+
+ if(id)document.getElementById(id).classList.add("active");
+
+}
+
+
+function hidePanels(){
+
+ document.querySelectorAll(".panel")
+ .forEach(x=>x.classList.remove("show"));
+
+}
+
+
+function showChat(){
+
+ hidePanels();
+ active("chatButton");
+
+}
+
+
+function openTask(){
+
+ hidePanels();
+ active("taskButton");
+ document.getElementById("taskPanel").classList.add("show");
+
+}
+
+
+function openHomework(){
+
+ hidePanels();
+ active("homeButton");
+ document.getElementById("homeworkPanel").classList.add("show");
+
+}
+
+
+function openGame(){
+
+ hidePanels();
+ active("gameButton");
+ document.getElementById("gamePanel").classList.add("show");
+
+}
+
+
+function openCalculator(){
+
+ hidePanels();
+ active("calcButton");
+ document.getElementById("calcPanel").classList.add("show");
+
+}
+
+
+function openHistory(){
+
+ hidePanels();
+ active("historyButton");
+ document.getElementById("historyPanel").classList.add("show");
+
+ renderHistory();
+
+}
+
+
+function openFavorites(){
+
+ hidePanels();
+ active("favoriteButton");
+ document.getElementById("favoritePanel").classList.add("show");
+
+ renderFavorites();
+
+}
+
+
+function openStats(){
+
+ hidePanels();
+ active("statsButton");
+ document.getElementById("statsPanel").classList.add("show");
+
+ updateStats();
+
+}
+
+
+function openThemes(){
+
+ hidePanels();
+ active("themeButton");
+ document.getElementById("themePanel").classList.add("show");
+
+}
+
+
+function openIdeas(){
+
+ hidePanels();
+ active(null);
+ document.getElementById("ideasPanel").classList.add("show");
+
+}
+
+
+function closePanel(id){
+
+ document.getElementById(id).classList.remove("show");
+
+ active("chatButton");
+
+}
+
+
+/* =========================
+   ЧАТ
+========================= */
+
+function addMessage(text,type){
+
+ const chat=document.getElementById("chat");
+
+ const message=document.createElement("div");
+
+ message.className="message "+type;
+
+ if(text.startsWith("CODE:")){
+
+  const code=text.substring(5);
+
+  const box=document.createElement("div");
+  box.className="code-box";
+
+  const head=document.createElement("div");
+  head.className="code-head";
+
+  const title=document.createElement("span");
+  title.textContent="💻 Код";
+
+  const copy=document.createElement("button");
+  copy.className="code-copy";
+  copy.textContent="📋 Скопировать";
+
+  copy.onclick=()=>{
+   navigator.clipboard.writeText(code);
+   copy.textContent="✅ Готово";
+   setTimeout(()=>copy.textContent="📋 Скопировать",1200);
+  };
+
+  const fav=document.createElement("button");
+  fav.className="code-copy";
+  fav.textContent="⭐";
+
+  fav.onclick=()=>{
+   favorites.push(code);
+   saveData();
+   toast("⭐ Добавлено!");
+  };
+
+  head.appendChild(title);
+
+  const buttons=document.createElement("div");
+  buttons.appendChild(copy);
+  buttons.appendChild(fav);
+
+  head.appendChild(buttons);
+
+  const pre=document.createElement("pre");
+  pre.textContent=code;
+
+  box.appendChild(head);
+  box.appendChild(pre);
+
+  message.appendChild(box);
+
+ }else{
+
+  message.textContent=text;
+
+  if(type==="bot"){
+
+   const small=document.createElement("div");
+   small.style.marginTop="8px";
+
+   const fav=document.createElement("button");
+
+   fav.textContent="⭐";
+   fav.style.border="0";
+   fav.style.background="transparent";
+   fav.style.color="white";
+   fav.onclick=()=>{
+    favorites.push(text);
+    saveData();
+    toast("⭐ Сохранено");
+   };
+
+   small.appendChild(fav);
+   message.appendChild(small);
+
+  }
+
+ }
+
+ chat.appendChild(message);
+
+ chat.scrollTop=chat.scrollHeight;
+
+}
+
+
+function sendMessage(){
+
+ const input=document.getElementById("userInput");
+
+ const text=input.value.trim();
+
+ if(!text)return;
+
+ lastUser=text;
+
+ addMessage(text,"user");
+
+ input.value="";
+
+ stats.messages++;
+
+ stats.xp+=5;
+
+ history.unshift({
+  user:text,
+  time:new Date().toLocaleString()
+ });
+
+ history=history.slice(0,100);
+
+ saveData();
+
+ setTimeout(()=>{
+
+  const answer=getAnswer(text);
+
+  lastAnswer=answer;
+
+  addMessage(answer,"bot");
+
+ },250);
+
+}
+
+
+/* =========================
+   РЕЖИМЫ
+========================= */
+
+function toggleModes(){
+
+ document.getElementById("modes").classList.toggle("show");
+
+}
+
+
+function setMode(x){
+
+ mode=x;
+
+ document.getElementById("modes").classList.remove("show");
+
+ const names={
+  chat:"💬 Обычный чат",
+  math:"🧮 Математика",
+  homework:"📚 Домашка",
+  code:"💻 Код",
+  games:"🎮 Игры",
+  fun:"😂 Развлечения",
+  simple:"🧠 Объясни проще"
+ };
+
+ addMessage("🐻 Режим: "+names[x],"bot");
+
+}
+
+
+/* =========================
+   ОТВЕТЫ
+========================= */
+
+function getAnswer(text){
+
+ let t=text.toLowerCase();
+
+ if(mode==="math"){
+
+  try{
+   return "🧮 Ответ: "+calculate(text);
+  }catch{
+   return "❌ Не понял пример.\nНапример: 125 × 8";
+  }
+
+ }
+
+ if(mode==="games"){
+  return generateGame(text);
+ }
+
+ if(mode==="fun"){
+
+  if(t.includes("мем"))
+   return "😂 Когда сказал «ещё 5 минут» и просидел за игрой 3 часа.";
+
+  if(t.includes("шут"))
+   return "😂 Почему программист не любит природу? Там слишком много багов!";
+
+ }
+
+ if(t.includes("привет")||t.includes("здравств"))
+  return "🐻 Привет! Что будем делать?";
+
+ if(t.includes("как дела"))
+  return "🐻 Отлично! Я готов 😎";
+
+ if(t.includes("кто ты"))
+  return "🐻 Я Bear.AI MAX!";
+
+ if(t.includes("спасибо"))
+  return "🐻 Пожалуйста!";
+
+ if(t.includes("пока"))
+  return "🐻 Пока! 👋";
+
+ if(t.includes("игр")||t.includes("кликер")||t.includes("футбол")||t.includes("змей"))
+  return generateGame(text);
+
+ if(t.includes("код"))
+  return "💻 Напиши, какой код тебе нужен.";
+
+ if(t.includes("реши")||t.includes("задач"))
+  return "📝 Открой кнопку «Задача» слева.";
+
+ if(t.includes("мем"))
+  return "😂 Открой генератор идей или напиши тему мема.";
+
+ if(mode==="simple")
+  return "🧠 Простыми словами: "+text+"\n\nПопробуй написать вопрос подробнее.";
+
+ return "🐻 Я понял! Попробуй попросить меня решить пример, создать игру, написать код или открыть одну из функций слева.";
+
+}
+
+
+/* =========================
+   МАТЕМАТИКА
+========================= */
+
+function calculate(expression){
+
+ let e=expression
+ .replace(/×/g,"*")
+ .replace(/÷/g,"/")
+ .replace(/−/g,"-")
+ .replace(/,/g,".")
+ .replace(/\^/g,"**");
+
+ if(!/^[0-9+\-*/().\s*]+$/.test(e))
+  throw new Error();
+
+ let result=Function('"use strict";return('+e+')')();
+
+ if(!Number.isFinite(result))
+  throw new Error();
+
+ return result;
+
+}
+
+
+/* =========================
+   ЗАДАЧИ
+========================= */
+
+function solveTask(){
+
+ const text=document.getElementById("taskInput").value.trim();
+
+ const result=document.getElementById("taskResult");
+
+ if(!text){
+
+  result.style.display="block";
+  result.textContent="🐻 Сначала напиши задачу.";
+
+  return;
+
+ }
+
+ stats.tasks++;
+ stats.xp+=15;
+ saveData();
+
+ const nums=text.match(/\d+(?:[.,]\d+)?/g);
+
+ if(!nums||nums.length<2){
+
+  result.style.display="block";
+
+  result.textContent=
+  "❌ Мне нужны числа в условии.\n\n"+
+  "Например:\nУ Маши было 25 яблок. Она отдала 7. Сколько осталось?";
+
+  return;
+
+ }
+
+ const n=nums.map(x=>Number(x.replace(",",".")));
+
+ let answer;
+
+ if(/остал|отдал|забрал|потрат|уменьш/i.test(text)){
+
+  answer=
+`🧠 Действия:
+
+1️⃣ Было: ${n[0]}
+
+2️⃣ Убрали: ${n[1]}
+
+3️⃣ Вычитание:
+
+${n[0]} − ${n[1]} = ${n[0]-n[1]}
+
+✅ Ответ: ${n[0]-n[1]}`;
+
+ }else if(/вместе|всего|добав|принес|получил/i.test(text)){
+
+  answer=
+`🧠 Действия:
+
+1️⃣ Первое число: ${n[0]}
+
+2️⃣ Второе число: ${n[1]}
+
+3️⃣ Складываем:
+
+${n[0]} + ${n[1]} = ${n[0]+n[1]}
+
+✅ Ответ: ${n[0]+n[1]}`;
+
+ }else if(/кажд|раза|разом/i.test(text)){
+
+  answer=
+`🧠 Действия:
+
+${n[0]} × ${n[1]} = ${n[0]*n[1]}
+
+✅ Ответ: ${n[0]*n[1]}`;
+
+ }else{
+
+  answer=
+`🧠 Я нашёл числа:
+
+${n.join(", ")}
+
+Но не могу надёжно определить действие.
+
+Попробуй написать:
+«Было 25, отдали 7. Сколько осталось?»`;
+
+ }
+
+ result.style.display="block";
+ result.textContent=answer;
+
+ lastAnswer=answer;
+
+}
+
+
+/* =========================
+   ФОТО
+========================= */
+
+function choosePhoto(){
+
+ document.getElementById("photoInput").click();
+
+}
+
+
+function photoSelected(e){
+
+ const file=e.target.files[0];
+
+ if(!file)return;
+
+ const img=document.getElementById("photoPreview");
+
+ img.src=URL.createObjectURL(file);
+ img.style.display="block";
+
+ const result=document.getElementById("taskResult");
+
+ result.style.display="block";
+
+ result.textContent=
+`📷 Фото загружено!
+
+Я показал фотографию выше.
+
+⚠️ В этой версии чистого HTML автоматическое чтение текста с фотографии не подключено.
+
+Перепиши условие под фотографией и нажми «🧠 Решить».
+
+Для настоящего режима:
+📷 Фото → OCR → 🧠 AI → действия → ✅ ответ
+
+нужно подключить OCR/AI API.`;
+
+}
+
+
+/* =========================
+   ПРОСТОЕ ОБЪЯСНЕНИЕ
+========================= */
+
+function simplifyTask(){
+
+ const text=document.getElementById("taskInput").value.trim();
+
+ const result=document.getElementById("taskResult");
+
+ result.style.display="block";
+
+ if(!text){
+  result.textContent="🐻 Сначала напиши задачу.";
+  return;
+ }
+
+ result.textContent=
+ "🧠 Объяснение простыми словами:\n\n"+
+ text+
+ "\n\n👉 Сначала выпиши известные числа.\n"+
+ "👉 Определи, что нужно найти.\n"+
+ "👉 Выбери действие.\n"+
+ "👉 Посчитай.\n"+
+ "👉 Запиши ответ.";
+
+}
+
+
+/* =========================
+   ДОМАШКА
+========================= */
+
+function solveHomework(){
+
+ const text=document.getElementById("homeworkInput").value.trim();
+
+ const result=document.getElementById("homeworkResult");
+
+ result.style.display="block";
+
+ if(!text){
+  result.textContent="Напиши домашнее задание.";
+  return;
+ }
+
+ result.textContent=
+ "📚 Решение:\n\n"+
+ "Задание:\n"+text+
+ "\n\n🧠 Разбор:\n"+
+ "1. Определяем, что требуется найти.\n"+
+ "2. Выписываем известные данные.\n"+
+ "3. Выбираем нужное действие или правило.\n"+
+ "4. Получаем результат.\n\n"+
+ "⚠️ Для сложного задания лучше написать условие полностью.";
+
+ stats.tasks++;
+ stats.xp+=10;
+ saveData();
+
+}
+
+
+function explainHomework(){
+
+ const text=document.getElementById("homeworkInput").value.trim();
+
+ document.getElementById("homeworkResult").style.display="block";
+
+ document.getElementById("homeworkResult").textContent=
+ "🧠 Простое объяснение:\n\n"+
+ (text||"Напиши задание.")+
+ "\n\nГлавная идея — разбить задание на маленькие шаги.";
+
+}
+
+
+function checkHomework(){
+
+ const text=document.getElementById("homeworkInput").value.trim();
+
+ document.getElementById("homeworkResult").style.display="block";
+
+ document.getElementById("homeworkResult").textContent=
+ "✅ Проверка:\n\n"+
+ (text||"Задание не введено.")+
+ "\n\n⚠️ Чтобы проверить конкретный ответ, добавь своё решение.";
+
+}
+
+
+/* =========================
+   КАЛЬКУЛЯТОР
+========================= */
+
+function calcInput(x){
+
+ const d=document.getElementById("calcDisplay");
+
+ if(d.value==="0")d.value=x;
+ else d.value+=x;
+
+}
+
+
+function clearCalc(){
+ document.getElementById("calcDisplay").value="0";
+}
+
+
+function backCalc(){
+
+ const d=document.getElementById("calcDisplay");
+
+ d.value=d.value.length<=1?"0":d.value.slice(0,-1);
+
+}
+
+
+function calculateCalc(){
+
+ const d=document.getElementById("calcDisplay");
+
+ try{
+
+  if(!/^[0-9+\-*/().\s]+$/.test(d.value))
+   throw 0;
+
+  const result=Function('"use strict";return('+d.value+')')();
+
+  if(!Number.isFinite(result))throw 0;
+
+  d.value=result;
+
+  xp(2);
+
+ }catch{
+
+  d.value="Ошибка";
+
+  setTimeout(clearCalc,1000);
+
+ }
+
+}
+
+
+/* =========================
+   ИГРЫ
+========================= */
+
+function generateGame(request){
+
+ const t=request.toLowerCase();
+
+ let code="";
+
+ if(t.includes("футбол")){
+
+ code=`
+<!DOCTYPE html>
+<html>
+<body style="text-align:center;background:#159447;color:white;font-family:Arial">
+<h1>⚽ Bear Football</h1>
+<h2 id="score">Голы: 0</h2>
+<button onclick="goal()" style="font-size:60px;padding:25px;border:0;border-radius:20px">⚽</button>
+<script>
+let score=0;
+function goal(){
+ score++;
+ document.getElementById("score").textContent="Голы: "+score;
+}
+<\\/script>
+</body>
+</html>`;
+
+ }else if(t.includes("кликер")){
+
+ code=`
+<!DOCTYPE html>
+<html>
+<body style="text-align:center;background:#101827;color:white;font-family:Arial">
+<h1>🪙 Bear Clicker</h1>
+<h2 id="coins">0</h2>
+<button onclick="clicker()" style="font-size:60px;padding:25px;border:0;border-radius:20px">🪙</button>
+<script>
+let coins=0;
+function clicker(){
+ coins++;
+ document.getElementById("coins").textContent=coins;
+}
+<\\/script>
+</body>
+</html>`;
+
+ }else if(t.includes("змей")){
+
+ code=`
+<!DOCTYPE html>
+<html>
+<body style="background:#111;text-align:center;color:white">
+<h1>🐍 Snake</h1>
+<canvas id="c" width="300" height="300" style="background:#222"></canvas>
+<script>
+const c=document.getElementById("c");
+const x=c.getContext("2d");
+let px=140,py=140;
+document.onkeydown=e=>{
+ if(e.key==="ArrowUp")py-=10;
+ if(e.key==="ArrowDown")py+=10;
+ if(e.key==="ArrowLeft")px-=10;
+ if(e.key==="ArrowRight")px+=10;
+ draw();
+};
+function draw(){
+ x.clearRect(0,0,300,300);
+ x.fillStyle="lime";
+ x.fillRect(px,py,20,20);
+}
+draw();
+<\\/script>
+</body>
+</html>`;
+
+ }else if(t.includes("космос")){
+
+ code=`
+<!DOCTYPE html>
+<html>
+<body style="background:#020617;color:white;text-align:center;font-family:Arial">
+<h1>🚀 Космос</h1>
+<button onclick="fly()" style="font-size:50px;padding:20px;border:0;border-radius:20px">🚀</button>
+<h2 id="distance">0 км</h2>
+<script>
+let d=0;
+function fly(){
+ d+=100;
+ document.getElementById("distance").textContent=d+" км";
+}
+<\\/script>
+</body>
+</html>`;
+
+ }else{
+
+ code=`
+<!DOCTYPE html>
+<html>
+<body style="background:#111827;color:white;text-align:center;font-family:Arial">
+<h1>🐻 Bear Game</h1>
+<p>Нажимай кнопку!</p>
+<button onclick="score++ ; update()" style="font-size:30px;padding:20px;border:0;border-radius:15px">🎯 Нажать</button>
+<h2 id="score">0</h2>
+<script>
+let score=0;
+function update(){
+ document.getElementById("score").textContent=score;
+}
+<\\/script>
+</body>
+</html>`;
+
+ }
+
+ stats.games++;
+ stats.xp+=20;
+ saveData();
+
+ return "CODE:"+code;
+
+}
+
+
+function runGame(){
+
+ const code=document.getElementById("gameCode").value.trim();
+
+ if(!code){
+  toast("Вставь код игры!");
+  return;
+ }
+
+ const frame=document.getElementById("gameFrame");
+
+ frame.srcdoc=code;
+ frame.classList.add("show");
+
+ stats.games++;
+ stats.xp+=10;
+ saveData();
+
+}
+
+
+function backGameCode(){
+
+ const frame=document.getElementById("gameFrame");
+
+ frame.classList.remove("show");
+ frame.srcdoc="";
+
+}
+
+
+function generateRandomGame(){
+
+ const games=[
+  "кликер",
+  "футбол",
+  "змейка",
+  "космос",
+  "игра"
+ ];
+
+ const game=games[Math.floor(Math.random()*games.length)];
+
+ const result=generateGame(game);
+
+ document.getElementById("gameCode").value=result.substring(5);
+
+ toast("🎮 Игра создана!");
+
+}
+
+
+/* =========================
+   ИСТОРИЯ
+========================= */
+
+function renderHistory(){
+
+ const list=document.getElementById("historyList");
+
+ list.innerHTML="";
+
+ if(history.length===0){
+
+  list.innerHTML="<div class='card'>История пока пустая.</div>";
+
+  return;
+
+ }
+
+ history.forEach((item,i)=>{
+
+  const div=document.createElement("div");
+
+  div.className="history-item";
+
+  div.textContent="🕘 "+item.time+"\n"+item.user;
+
+  list.appendChild(div);
+
+ });
+
+}
+
+
+function clearHistory(){
+
+ history=[];
+
+ saveData();
+
+ renderHistory();
+
+ toast("История очищена");
+
+}
+
+
+/* =========================
+   ИЗБРАННОЕ
+========================= */
+
+function renderFavorites(){
+
+ const list=document.getElementById("favoriteList");
+
+ list.innerHTML="";
+
+ if(!favorites.length){
+
+  list.innerHTML="<div class='card'>⭐ Избранное пустое.</div>";
+
+  return;
+
+ }
+
+ favorites.forEach((x,i)=>{
+
+  const div=document.createElement("div");
+
+  div.className="favorite";
+
+  div.textContent=x;
+
+  list.appendChild(div);
+
+ });
+
+}
+
+
+/* =========================
+   ТЕМЫ
+========================= */
+
+function setTheme(x){
+
+ if(x==="light")
+  document.body.classList.add("light");
+ else
+  document.body.classList.remove("light");
+
+ localStorage.setItem("bearTheme",x);
+
+ toast("🎨 Тема изменена");
+
+}
+
+
+function setAccent(color){
+
+ document.documentElement.style.setProperty("--accent",color);
+
+ localStorage.setItem("bearAccent",color);
+
+ toast("🎨 Цвет изменён");
+
+}
+
+
+/* =========================
+   ИДЕИ
+========================= */
+
+function idea(type){
+
+ const ideas={
+  игра:[
+   "⚽ Футбольный кликер",
+   "🥚 Steal a Pet",
+   "🚀 Космический кликер",
+   "🏎️ Мини-гонки",
+   "🐍 Новая змейка"
+  ],
+  TikTok:[
+   "🎮 Покажи странную HTML-игру",
+   "😂 Сделай смешной баг",
+   "🏆 Челлендж на 100 кликов",
+   "🧠 Покажи Bear.AI"
+  ],
+  проект:[
+   "🐻 AI-помощник",
+   "🎮 Сайт с играми",
+   "📱 Мини-соцсеть",
+   "📚 Решатель задач"
+  ],
+  мем:[
+   "Когда играешь 5 минут и прошло 4 часа 😂",
+   "Когда код работает с первого раза 😳",
+   "Когда Bear.AI сказал «готово» 🐻"
+  ]
+ };
+
+ const arr=ideas[type];
+
+ document.getElementById("ideasResult").style.display="block";
+
+ document.getElementById("ideasResult").textContent=
+ "💡 Идеи:\n\n"+
+ arr.map((x,i)=>(i+1)+". "+x).join("\n");
+
+}
+
+
+/* =========================
+   ГОЛОС
+========================= */
+
+function startVoice(){
+
+ if(!("webkitSpeechRecognition" in window||"SpeechRecognition" in window)){
+
+  toast("🎤 Голосовой ввод не поддерживается");
+
+  return;
+
+ }
+
+ const SpeechRecognition=
+ window.SpeechRecognition||window.webkitSpeechRecognition;
+
+ const recognition=new SpeechRecognition();
+
+ recognition.lang="ru-RU";
+
+ recognition.onstart=()=>{
+  toast("🎤 Говори...");
+ };
+
+ recognition.onresult=e=>{
+
+  document.getElementById("userInput").value=
+  e.results[0][0].transcript;
+
+ };
+
+ recognition.start();
+
+}
+
+
+/* =========================
+   ОЗВУЧКА
+========================= */
+
+function speakLast(){
+
+ if(!lastAnswer){
+
+  toast("🔊 Пока нечего озвучивать");
+
+  return;
+
+ }
+
+ if(!("speechSynthesis" in window)){
+
+  toast("🔊 Озвучка не поддерживается");
+
+  return;
+
+ }
+
+ speechSynthesis.cancel();
+
+ const utter=new SpeechSynthesisUtterance(
+  lastAnswer.replace(/CODE:[\s\S]*/,"")
+ );
+
+ utter.lang="ru-RU";
+ utter.rate=.95;
+
+ speechSynthesis.speak(utter);
+
+}
+
+
+/* =========================
+   СЕКРЕТНЫЙ РЕЖИМ
+========================= */
+
+function secretMode(){
+
+ document.body.classList.toggle("secret");
+
+ if(document.body.classList.contains("secret")){
+
+  toast("🔐 СЕКРЕТНЫЙ РЕЖИМ АКТИВИРОВАН");
+
+ }else{
+
+  toast("🔓 Секретный режим выключен");
+
+ }
+
+}
+
+
+/* =========================
+   ЗАГРУЗКА
+========================= */
+
+(function(){
+
+ const theme=localStorage.getItem("bearTheme");
+
+ if(theme==="light")
+  document.body.classList.add("light");
+
+ const accent=localStorage.getItem("bearAccent");
+
+ if(accent)
+  document.documentElement.style.setProperty("--accent",accent);
+
+ updateStats();
+
+})();
+
+</script>
+
+</body>
+</html>
